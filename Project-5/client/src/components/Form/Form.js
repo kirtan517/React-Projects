@@ -1,9 +1,15 @@
 import useStyles from "./styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FileBase from "react-file-base64";
 import { Paper, TextField, Button, Typography } from "@material-ui/core";
+import { createPost, updatePost } from "../../actions/post";
+import { useDispatch, useSelector } from "react-redux";
 
-const Form = () => {
+const Form = ({ current_id, setcurrent_id }) => {
+  const dispatch = useDispatch();
+  const post = useSelector((state) =>
+    current_id ? state.posts.find((post) => post._id === current_id) : null
+  );
   const [postData, setPostData] = useState({
     creator: "",
     message: "",
@@ -13,10 +19,30 @@ const Form = () => {
   });
   const classes = useStyles();
 
-  const handleSubmit = () =>{
-  }
-  const clear = () =>{
-  }
+  useEffect(() => {
+    if (current_id) setPostData(post);
+  }, [post]);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    console.log(postData);
+    if (!current_id) dispatch(createPost(postData));
+    else {
+      dispatch(updatePost(current_id, postData));
+    }
+    clear();
+  };
+
+  const clear = () => {
+    setcurrent_id(null);
+    setPostData({
+      creator: "",
+      message: "",
+      title: "",
+      tags: "",
+      selectedFile: "",
+    });
+  };
   return (
     <Paper className={classes.paper}>
       <form
@@ -35,6 +61,20 @@ const Form = () => {
             setPostData({ ...postData, creator: e.target.value })
           }
         ></Typography>
+        <Typography variant="h6">
+          {current_id ? `Editing "${post.title}"` : "Creating a Memory"}
+        </Typography>
+        <TextField
+          name="creator"
+          variant="outlined"
+          label="Creator"
+          fullWidth
+          value={postData.creator}
+          onChange={(e) =>
+            setPostData({ ...postData, creator: e.target.value })
+          }
+        />
+
         <TextField
           name="title"
           variant="outlined"
@@ -62,7 +102,7 @@ const Form = () => {
           fullWidth
           value={postData.tags}
           onChange={(e) =>
-            setPostData({ ...postData, title: e.target.value.split(",") })
+            setPostData({ ...postData, tags: e.target.value.split(",") })
           }
         ></TextField>
         <div className={classes.fileInput}>
@@ -74,8 +114,25 @@ const Form = () => {
             }
           ></FileBase>
         </div>
-        <Button className = {classes.buttonSubmit} variant = "contained" color = "primary" size = 'large' fullWidth>Submit</Button>
-        <Button  variant = "contained" color = "secondary" size = 'small' onClick= {clear} fullWidth>Clear</Button>
+        <Button
+          className={classes.buttonSubmit}
+          variant="contained"
+          color="primary"
+          size="large"
+          type="submit"
+          fullWidth
+        >
+          Submit
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          size="small"
+          onClick={clear}
+          fullWidth
+        >
+          Clear
+        </Button>
       </form>
     </Paper>
   );

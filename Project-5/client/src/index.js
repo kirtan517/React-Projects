@@ -7,8 +7,12 @@ import {applyMiddleware,compose} from "redux";
 import thunk from "redux-thunk"
 import reducers from './reducers'
 import { configureStore } from '@reduxjs/toolkit'
+import './index.css';
 
-const store = configureStore({reducer : reducers,middleware: [thunk]});
+const store = configureStore({reducer : reducers,middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      thunk:{}
+    })});
 
 ReactDOM.render( <Provider store = {store}>
 <App/>
