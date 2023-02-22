@@ -6,48 +6,17 @@ import Form from "./components/Form/Form";
 import useStyles from "./styles";
 import { getPosts } from "./actions/post";
 import { useDispatch } from "react-redux";
+import Navbar from "./components/Navbar/Navbar";
+import Home from "./components/Home/Home";
 
 const App = () => {
-  const [current_id, setcurrent_id] = useState(0);
+
   const classes = useStyles();
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getPosts());
-  }, [current_id,dispatch]);
 
   return (
     <Container maxWidth="lg">
-      <AppBar className={classes.appBar} position="static" color="inherit">
-        <Typography className={classes.heading} variant="h2" align="center">
-          {" "}
-          Memories
-        </Typography>
-        <img
-          className={classes.image}
-          src={memories}
-          alt="memories"
-          height={60}
-        />
-      </AppBar>
-      <Grow in>
-        <Container>
-          <Grid
-            container
-            justifyContent="space-between"
-            alignItems="stretch"
-            spacing={3}
-          >
-            <Grid item xs={12} sm={7}>
-              <Posts setcurrent_id = {setcurrent_id} />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Form current_id = {current_id} setcurrent_id = {setcurrent_id} />
-            </Grid>
-          </Grid>
-        </Container>
-      </Grow>
+      <Navbar/>
+      <Home/>
     </Container>
   );
 };

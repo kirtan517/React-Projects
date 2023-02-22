@@ -5,7 +5,6 @@ import { CircularProgress, Grid } from "@material-ui/core";
 const Posts = ({setcurrent_id}) => {
   const posts = useSelector((state) => state.posts);
   const classes = useStyles();
-  console.log({posts});
   return (
     <>
       {!posts.length ? (
