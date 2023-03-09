@@ -12,8 +12,10 @@ import { LockOutlined } from "@material-ui/icons";
 import useStyles from "./styles";
 import Input from "./Input";
 import { useState } from "react";
-import { GoogleLogin } from "react-google-login";
+import { GoogleLogin } from "@react-oauth/google";
 import icon from "./icon";
+import { useGoogleLogin } from "@react-oauth/google";
+import jwt_decode from "jwt-decode";
 
 const Auth = () => {
   const classes = useStyles();
@@ -26,12 +28,24 @@ const Auth = () => {
   const switchMode = () => {
     setisSignedUp((previousState) => !previousState);
   };
-  const googleFailure = () => {
+  const googleFailure = (error) => {
+    console.log(error);
     console.log("Google success was a failure try again latter!");
   };
-  const googleSuccess = (res) => {
+  const googleSuccess = async (res) => {
     console.log(res);
+    const CLIENT =
+      "436866084784-qio70eakhv0sov1e35he60gg5g5tuun6.apps.googleusercontent.com";
+      
+    const result = res?.profileObj;
+    const token = res?.tokenId;
+    console.log(result);
   };
+  const Login = useGoogleLogin({
+    onFailure: googleFailure,
+    onSuccess: googleSuccess,
+    cookiePolicy: "single_host_origin",
+  });
   return (
     <Container component="main" maxWidth="xs" spacing={2}>
       <Paper className={classes.paper} elevation={3}>
@@ -80,27 +94,19 @@ const Auth = () => {
                 type="password"
               />
             )}
-          <Grid item xs= {12} sm = {12}>
-            <GoogleLogin
-              clientId="GOOGLE ID"
-              render={(renderPorps) => (
-                <Button
-                  className={classes.googleButton}
-                  color="primary"
-                  fullWidth
-                  onClick={renderPorps.onClick}
-                  disabled={renderPorps.disabled}
-                  startIcon={<icon />}
-                  variant="contained"
-                >
-                  Google Sing In
-                </Button>
-              )}
-              onFailure={googleFailure}
-              onSuccess={googleSuccess}
-              cookiePolicy="single_host_origin"
-            ></GoogleLogin>
-          </Grid>
+            <Grid item xs={12} sm={12}>
+              <Button
+                className={classes.googleButton}
+                color="primary"
+                fullWidth
+                onClick={() => Login()}
+                // disabled={renderPorps.disabled}
+                startIcon={<icon />}
+                variant="contained"
+              >
+                Google Sing In
+              </Button>
+            </Grid>
           </Grid>
           <Button
             type="submit"
