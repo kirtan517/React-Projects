@@ -4,6 +4,7 @@ import FileBase from "react-file-base64";
 import { Paper, TextField, Button, Typography } from "@material-ui/core";
 import { createPost, updatePost } from "../../actions/post";
 import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 
 const Form = ({ current_id, setcurrent_id }) => {
   const dispatch = useDispatch();

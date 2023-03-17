@@ -2,6 +2,7 @@ import { AppBar, Avatar, Button, Toolbar, Typography } from "@material-ui/core";
 import useStyles from "./styles";
 import memories from "../../images/memories.png";
 import {Link} from "react-router-dom";
+import React from 'react';
 
 const Navbar = () => {
   const classes = useStyles();
