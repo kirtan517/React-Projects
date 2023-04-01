@@ -4,10 +4,14 @@ import { useDispatch } from "react-redux";
 import Form from "../Form/Form";
 import Posts from "../Posts/Posts";
 import { getPosts } from "../../actions/post";
+import { json } from "react-router";
 
 const Home = () => {
   const [current_id, setcurrent_id] = useState(0);
+
+
 //   const classes = useStyles();
+  console.log("This is the home Page +++++++++++++++++")
 
   const dispatch = useDispatch();
 

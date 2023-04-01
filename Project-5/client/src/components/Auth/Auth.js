@@ -12,15 +12,30 @@ import Input from "./Input";
 import { useState, useEffect } from "react";
 import { useContext } from "react";
 import { GoogleAuthContext } from "./GoogleAuthProvider";
+import { useDispatch } from "react-redux";
 
 import React from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import jwt from "jwt-decode";
+import { signUp, signIn } from "../../actions/auth";
 
 // import OAuth2Client from "google-auth-library";
 const { OAuth2Client } = require("google-auth-library");
 // const { google } = require('googleapis');
+const userData = {
+	firstName: null,
+	lastName: null,
+	confirmPassword: null,
+	password: null,
+	email: null,
+};
 
 const Auth = () => {
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+
+	const [user, setUser] = useState(userData);
+
 	// handling the code
 	const [searchParams, setSearchParams] = useSearchParams();
 
@@ -34,10 +49,22 @@ const Auth = () => {
 	// This is the end
 
 	const classes = useStyles();
-	const submitHandler = () => {};
 	const [isSignedUp, setisSignedUp] = useState(false);
-	const handleChange = () => {};
 	const [showPassword, setshowPassword] = useState();
+
+	const submitHandler = (e) => {
+		e.preventDefault();
+		if(isSignedUp){
+			signUp(user);
+		}else{
+			signIn(user);
+		}
+		
+	};
+	const handleChange = (e) => {
+		setUser({... user , [e.target.name] : e.target.value})
+	};
+
 	const handleShowPassword = () =>
 		setshowPassword((previousState) => !previousState);
 	const switchMode = () => {
@@ -47,30 +74,29 @@ const Auth = () => {
 	// This is where the google logic lies
 	const contextValue = useContext(GoogleAuthContext);
 
-	const googleFailure = (error) => {
-		console.log(error);
-		console.log("Google success was a failure try again latter!");
-	};
-	const googleSuccess = (res) => {
-		console.log(res);
-		const CLIENT =
-			"436866084784-qio70eakhv0sov1e35he60gg5g5tuun6.apps.googleusercontent.com";
-	};
-
 	const oAuth2Client = new OAuth2Client(
 		contextValue.clientId,
 		contextValue.clientSecret,
-    "http://localhost:3000/auth",
+		"http://localhost:3000/auth"
 	);
 
-	useEffect(async () => {
-		if (searchParams.has("code")) {
-			  const data = await oAuth2Client.getToken(searchParams.get("code"));
-        console.log("This is the thing you have been waiting for : ",data);
+	useEffect(() => {
+		const main = async () => {
+			if (searchParams.has("code")) {
+				try {
+					const data = await oAuth2Client.getToken(searchParams.get("code"));
+					const final = jwt(data.tokens.id_token);
+					console.log("This is the joe which we are waiting for : ", final);
+					dispatch({ type: "AUTH", payload: final });
+					navigate("/");
+				} catch (error) {
+					console.log(error);
+				}
+			} else {
+				console.log("this is the worst thing");
 			}
-		else{
-      console.log("this is the worst thing");
-    }
+		};
+		main();
 	}, []);
 
 	const Login = () => {
@@ -116,8 +142,8 @@ const Auth = () => {
 									half
 								/>
 								<Input
-									name="firstName"
-									label="First Name"
+									name="lastName"
+									label="Last Name"
 									handleChange={handleChange}
 									half
 								/>
