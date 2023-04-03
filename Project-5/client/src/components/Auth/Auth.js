@@ -19,9 +19,10 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import jwt from "jwt-decode";
 import { signUp, signIn } from "../../actions/auth";
 
-// import OAuth2Client from "google-auth-library";
+
+
 const { OAuth2Client } = require("google-auth-library");
-// const { google } = require('googleapis');
+
 const userData = {
 	firstName: null,
 	lastName: null,
@@ -33,20 +34,11 @@ const userData = {
 const Auth = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+	
 
 	const [user, setUser] = useState(userData);
 
-	// handling the code
 	const [searchParams, setSearchParams] = useSearchParams();
-
-	if (searchParams.has("code")) {
-		console.log("This is the code :   ", searchParams.get("code"));
-	}
-	if (searchParams.has("scope")) {
-		console.log("This is the scope :   ", searchParams.get("scope"));
-	}
-
-	// This is the end
 
 	const classes = useStyles();
 	const [isSignedUp, setisSignedUp] = useState(false);
@@ -54,10 +46,11 @@ const Auth = () => {
 
 	const submitHandler = (e) => {
 		e.preventDefault();
+		
 		if(isSignedUp){
-			signUp(user);
+			dispatch(signUp(user,navigate));
 		}else{
-			signIn(user);
+			dispatch(signIn(user,navigate));
 		}
 		
 	};
@@ -83,17 +76,16 @@ const Auth = () => {
 	useEffect(() => {
 		const main = async () => {
 			if (searchParams.has("code")) {
-				try {
+				try {		
 					const data = await oAuth2Client.getToken(searchParams.get("code"));
 					const final = jwt(data.tokens.id_token);
-					console.log("This is the joe which we are waiting for : ", final);
-					dispatch({ type: "AUTH", payload: final });
+					dispatch({ type: "AUTH", payload: {...final,googleId : final["sub"],token : data.tokens.id_token, name : `${final.family_name} ${final.given_name}`} });
 					navigate("/");
 				} catch (error) {
 					console.log(error);
 				}
 			} else {
-				console.log("this is the worst thing");
+				console.log("Something went wrong");
 			}
 		};
 		main();
@@ -117,10 +109,7 @@ const Auth = () => {
 		const windowFeatures = `width=${width},height=${height},left=${left},top=${top}`;
 		window.open(authUrl, "Sign in with Google", windowFeatures);
 
-		console.log(authUrl);
 	};
-
-	// This is it
 
 	return (
 		<Container component="main" maxWidth="xs" spacing={2}>

@@ -3,8 +3,8 @@ export const GoogleAuthContext = createContext();
 
 function GoogleAuthProvider(props) {
 	const clientId =
-		"ClientID";
-	const clientSecret = "CLientSecret";
+		"436866084784-qio70eakhv0sov1e35he60gg5g5tuun6.apps.googleusercontent.com";
+	const clientSecret = "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";
 
 	const contextValue = useMemo(
 		() => ({ clientId: clientId, clientSecret: clientSecret }),
