@@ -34,6 +34,7 @@ const userData = {
 const Auth = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+	console.log("Inside the auth page");
 	
 
 	const [user, setUser] = useState(userData);

@@ -25,7 +25,8 @@ const Navbar = ({ isLogedIn, setIsLogedIn }) => {
 
 	useEffect(() => {
 		setUser(JSON.parse(localStorage.getItem("profile")));
-		setIsLogedIn(true);
+		if(localStorage.getItem("profile"))
+			setIsLogedIn(true);
 
 		const token =
 			localStorage.getItem("profile") !== null
