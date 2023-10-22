@@ -1,14 +1,53 @@
 import * as api from "../api";
 
-export const getPosts = () => async (dispatch) => {
+export const getPosts = (page) => async (dispatch) => {
   try {
-    const { data } = await api.fetchPosts();
+    dispatch({type : "START_LOADING"});
+    const {data}  = await api.fetchPosts(page);
     const action = { type: "FETCH_ALL", payload: data };
     dispatch(action);
+    dispatch({type:"END_LOADING"});
   } catch (error) {
     console.log(error.message);
   }
 };
+
+export const getPost = (id) => async (dispatch) =>{
+  try{
+    dispatch({type: "START_LOADING"});
+    const {data} = await api.fetchPost(id);
+    const action = {type : "FETCH_POST",payload : data};
+    dispatch(action);
+    dispatch({type:"END_LOADING"});
+  }catch(error){
+    console.log(error.message);
+  }
+}
+
+export const getRandomPost = (id) => async (dispatch) =>{
+  try{
+    dispatch({type: "START_LOADING"});
+    const {data} = await api.fetchRandomPost(id);
+    const action = {type : "FETCH_RANDOM_POST", payload : data};
+    dispatch(action);
+    dispatch({type: "END_LOADING"});
+  }catch(error){
+    console.log(error.message)
+  }
+}
+
+
+export const getSearchByPost = (search) => async(dispatch) =>{
+  try{
+    dispatch({type : "START_LOADING"});
+      const {data} = await api.getSearchByPost(search);
+      
+      dispatch({type : "FETCH_BY_SEARCH", payload : data.data});
+    dispatch({type : "END_LOADING"});
+  }catch(error){
+      console.log(error)
+  }
+}
 
 export const createPost = (post) => async (dispatch) => {
   try {

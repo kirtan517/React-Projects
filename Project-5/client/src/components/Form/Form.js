@@ -9,7 +9,7 @@ import React from "react";
 const Form = ({ current_id, setcurrent_id }) => {
 	const dispatch = useDispatch();
 	const post = useSelector((state) =>
-		current_id ? state.posts.find((post) => post._id === current_id) : null
+		current_id ? state.posts.posts.find((post) => post._id === current_id) : null
 	);
 	const [postData, setPostData] = useState({
 		message: "",
